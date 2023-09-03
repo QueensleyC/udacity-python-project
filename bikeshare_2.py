@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import sys
 
-CITY_DATA = { 'Chicago': 'chicago.csv',
-              'New York City': 'new_york_city.csv',
-              'Washington': 'washington.csv' }
+CITY_DATA = { 'chicago': 'chicago.csv',
+              'new york city': 'new_york_city.csv',
+              'washington': 'washington.csv' }
 
 def get_filters():
     """
@@ -21,29 +21,29 @@ def get_filters():
 
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     city = ''
-    city_list = ['Washington', 'New York City', 'Chicago']
-    while city.title().strip() not in city_list:
+    city_list = ['washington', 'new york city', 'chicago']
+    while city.lower().strip() not in city_list:
         print()
         city = input("Enter city name to be analysed. Valid names are 'chicago', 'new york city', 'washington'. - ")
-        city = city.title()
+        city = city.lower()
 
 
     # get user input for month (all, january, february, ... , june)
     month = ''
-    month_list = ['All', 'January', 'February', 'March', 'April', 'May', 'June']
-    while month.title().strip() not in month_list:
+    month_list = ['all', 'january', 'february', 'march', 'april', 'may', 'june']
+    while month.lower().strip() not in month_list:
         print()
         month = input("Enter month to be analysed. Valid names are 'all', 'january', 'february', 'march', 'april', 'may', 'june'. - ")
-        month = month.title()
+        month = month.lower()
 
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
     day = ''
-    dow_list = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    while day.title().strip() not in dow_list:
+    dow_list = ['all', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    while day.lower().strip() not in dow_list:
         print()
         day = input("Enter day of week to be analysed. Valid names are 'all', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'. - ")
-        day = day.title()
+        day = day.lower()
 
 
     print('-'*40)
@@ -69,13 +69,13 @@ def load_data(city, month, day):
         df = df.iloc[:,1:]
 
         # Create month column
-        months_dict = {'01': 'January', '02': 'February', '03': 'March', '04':'April', '05': 'May', '06': 'June'}
+        months_dict = {'01': 'january', '02': 'february', '03': 'march', '04':'april', '05': 'may', '06': 'june'}
 
         df['month'] = df['Start Time'].dt.strftime('%m')
         df['month'] = df['month'].map(months_dict)
 
         # Create day of week (dow) column
-        dow_dict ={0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+        dow_dict ={0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday', 4: 'friday', 5: 'saturday', 6: 'sunday'}
 
         df['dow'] = df['Start Time'].dt.dayofweek
         df['dow'] = df['dow'].map(dow_dict)
@@ -86,10 +86,10 @@ def load_data(city, month, day):
 
 
         # Filter data
-        if month != 'All':
+        if month != 'all':
             df = df[df['month'] == month]
 
-        if day != 'All':
+        if day != 'all':
             df = df[df['dow'] == day]
 
         count = 0
@@ -100,7 +100,7 @@ def load_data(city, month, day):
             if view_data != 'yes':
                 break
             else: 
-                run +=1
+                count +=1
                 print(df.iloc[(count-1)*5:(count*5)])
 
         
