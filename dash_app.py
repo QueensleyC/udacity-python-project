@@ -32,6 +32,13 @@ app.layout = html.Div([
         html.H5('How many rows of the data would you like to view?'),
         dcc.Dropdown(options = [0,5,10,20,50,100,200,'All'], value = 0, id='rows-data-dropdown',clearable=False),
 
+        html.Br(), # Adds spacing between elements
+
+        # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
+        html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#00ff00', 'color':'black','width': '300px'}),
+
+        html.Br(),
+
         dcc.Store(id = 'filtered-df-show'),
         dcc.Store(id = 'filtered-df-use'),
 
@@ -39,6 +46,9 @@ app.layout = html.Div([
         dash_table.DataTable(
             id = 'show-df'
         ),
+
+        html.Br(),
+
 
         html.H3('Most Frequent Times of Travel' ,style = {'textAlign':'center'}),
         html.H5('Most Common Month:'),
