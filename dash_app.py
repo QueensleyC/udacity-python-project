@@ -64,10 +64,35 @@ app.layout = html.Div([
 
         html.H3('User Statistics' ,style = {'textAlign':'center'}),
         html.H5('User Type Count:'),
-        html.Div(id = 'user-type-count'),
-        html.H5('Gender Count:'),
-        html.Div(id = 'gender-count'),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Subscriber:'), width = 1),
+                dbc.Col(html.Div(id = 'subscriber')),
+            ]
+        ),
 
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Customer:'), width = 1),
+                dbc.Col(html.Div(id = 'customer')),
+            ]
+        ),
+        html.Div(id = 'user-type-count-1'),
+        html.Div(id = 'user-type-count-2'),
+        html.H5('Gender Count:'),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Male:'), width = 1),
+                dbc.Col(html.Div(id = 'gender-count-m')),
+            ]
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Female:'), width = 1),
+                dbc.Col(html.Div(id = 'gender-count-f')),
+            ]
+        ),
         html.H5('Most Common Year of Birth:'),
         html.Div(id = 'common-year-birth'),
         html.H5('Earliest Year of Birth:'),
@@ -225,17 +250,51 @@ def trip_duration(df):
     return total_duration, mean_duration
 
 @app.callback(
+    Output('subscriber', 'children'),
+    Output('customer', 'children'),
+    Output('gender-count-m', 'children'),
+    Output('gender-count-f', 'children'),
     Output('recent-year-birth', 'children'),
     Output('earliest-year-birth','children'),
     Output('common-year-birth','children'),
     Input('filtered-df-use','data')
 )
 def user_stat(df):
+    ### --------- User Type ---------- ###
+    user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
+
+    user_type_dict = Counter(user_type_list_cleaned)
+
+    print(user_type_dict)
+
+    users = ['','']
+
+    users[0] = user_type_dict['Subscriber']
+    users[1] = user_type_dict['Customer']
+
+
+
+    ### --------- Gender ---------- ###
+
+    # Remove all NoneType from the list
+    gender_list_cleaned = [item for item in df['Gender'] if item is not None]
+
+    gender_count_dict = Counter(gender_list_cleaned)
+
+    print(gender_count_dict)
+
+    genders = ['','']
+
+    genders[0] = gender_count_dict['Male'] 
+    genders[1] = gender_count_dict['Female'] 
+
+
+    ### --------- Births ---------- ###
     print('Removing NoneType...')
     year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
 
 
-    birth_year = Counter(year_list_cleaned)
+    birth_year = Counter(year_list_cleaned) # Create a dictionary from the column of birth year to indicate the count of each birth year
     
     list_birth_year_count = []
 
@@ -243,6 +302,7 @@ def user_stat(df):
         list_birth_year_count.append(item)
 
 
+    # Sort the items of the dictionary created by the count of each year
     top_birth_year = sorted(list_birth_year_count, key = lambda x: x[1], reverse=True)[0][0] #TODO: Not producing correct result
                
     year_list_cleaned.sort()
@@ -250,7 +310,7 @@ def user_stat(df):
     earliest_birth_year = int(year_list_cleaned[0])
     recent_birth_year = int(year_list_cleaned[-1])
 
-    return recent_birth_year, earliest_birth_year, top_birth_year
+    return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
 
 if __name__ == '__main__':
     app.run_server(debug = True)
