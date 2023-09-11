@@ -75,35 +75,10 @@ app.layout = html.Div([
 
         html.H3('User Statistics' ,style = {'textAlign':'center'}),
         html.H5('User Type Count:'),
-        dbc.Row(
-            [
-                dbc.Col(html.H6('Subscriber:'), width = 1),
-                dbc.Col(html.Div(id = 'subscriber')),
-            ]
-        ),
-
-        dbc.Row(
-            [
-                dbc.Col(html.H6('Customer:'), width = 1),
-                dbc.Col(html.Div(id = 'customer')),
-            ]
-        ),
-        html.Div(id = 'user-type-count-1'),
-        html.Div(id = 'user-type-count-2'),
+        html.Div(id = 'user-type-count'),
         html.H5('Gender Count:'),
-        dbc.Row(
-            [
-                dbc.Col(html.H6('Male:'), width = 1),
-                dbc.Col(html.Div(id = 'gender-count-m')),
-            ]
-        ),
+        html.Div(id = 'gender-count'),
 
-        dbc.Row(
-            [
-                dbc.Col(html.H6('Female:'), width = 1),
-                dbc.Col(html.Div(id = 'gender-count-f')),
-            ]
-        ),
         html.H5('Most Common Year of Birth:'),
         html.Div(id = 'common-year-birth'),
         html.H5('Earliest Year of Birth:'),
@@ -269,10 +244,6 @@ def trip_duration(df):
     return total_duration, mean_duration
 
 @app.callback(
-    Output('subscriber', 'children'),
-    Output('customer', 'children'),
-    Output('gender-count-m', 'children'),
-    Output('gender-count-f', 'children'),
     Output('recent-year-birth', 'children'),
     Output('earliest-year-birth','children'),
     Output('common-year-birth','children'),
@@ -316,7 +287,7 @@ def user_stat(df):
     year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
 
 
-    birth_year = Counter(year_list_cleaned) # Create a dictionary from the column of birth year to indicate the count of each birth year
+    birth_year = Counter(year_list_cleaned)
     
     list_birth_year_count = []
 
@@ -324,7 +295,6 @@ def user_stat(df):
         list_birth_year_count.append(item)
 
 
-    # Sort the items of the dictionary created by the count of each year
     top_birth_year = sorted(list_birth_year_count, key = lambda x: x[1], reverse=True)[0][0] #TODO: Not producing correct result
                
     year_list_cleaned.sort()
@@ -332,7 +302,7 @@ def user_stat(df):
     earliest_birth_year = int(year_list_cleaned[0])
     recent_birth_year = int(year_list_cleaned[-1])
 
-    return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
+    return recent_birth_year, earliest_birth_year, top_birth_year
 
 def plot_charts(df):
     pass
