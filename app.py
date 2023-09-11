@@ -13,9 +13,11 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 df_global = pd.DataFrame()
 
-app.layout = html.Div([
+app.layout = html.Div(
+        style={'backgroundColor': '#00cae4'},
+        children = [
         # Application title
-        html.H1("Descriptive Statistics on US Bikeshare Data", style = {'textAlign':'center', 'color':'blue'}),
+        html.H1("Descriptive Statistics on US Bikeshare Data", style = {'textAlign':'center', 'color':'#d70808'}),
         # Bar chart element
         html.H2("Filter Data"),
 
@@ -35,14 +37,15 @@ app.layout = html.Div([
 
         html.Br(), # Adds spacing between elements
 
-        # # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
-        # html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#00ff00', 'color':'black','width': '300px'}),
+        # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
+        html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#d70808', 'color':'black','width': '300px'}),
 
         html.Br(),
 
         dcc.Store(id = 'filtered-df-show'),
         dcc.Store(id = 'filtered-df-use'),
 
+        html.Br(),
 
         dash_table.DataTable(
             id = 'show-df'
@@ -280,8 +283,6 @@ def trip_duration(df):
     Input('filtered-df-use','data')
 )
 def user_stat(df):
-
-    # print(f'Our dataframe is {df}')
 
     ### --------- User Type ---------- ###
     user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
