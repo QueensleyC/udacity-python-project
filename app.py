@@ -1,4 +1,5 @@
 from dash import Dash, dcc, html, Output, Input, dash_table
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
 import time
@@ -114,11 +115,16 @@ app.layout = html.Div([
 
 @app.callback(
     Output(component_id='filtered-df-use', component_property= 'data'),
-    Input(component_id='city-dropdown', component_property='value'),
-    Input(component_id='month-dropdown', component_property='value'),
-    Input(component_id='day-dropdown', component_property='value')
-)
-def filter_data_use(city, month, day):
+    [Input('button', 'n_clicks')],
+    state = [
+        State(component_id='city-dropdown', component_property='value'),
+        State(component_id='month-dropdown', component_property='value'),
+        State(component_id='day-dropdown', component_property='value')
+    ],
+   )
+def filter_data_use(clicks, city, month, day):
+
+    print('Creating dataset at {}'.format(time.time()))
 
     CITY_DATA = { 'Chicago': 'chicago.csv',
               'New York City': 'new_york_city.csv',
@@ -159,12 +165,15 @@ def filter_data_use(city, month, day):
 
 @app.callback(
     Output(component_id='filtered-df-show', component_property= 'data'),
-    Input(component_id='city-dropdown', component_property='value'),
-    Input(component_id='month-dropdown', component_property='value'),
-    Input(component_id='day-dropdown', component_property='value'),
-    Input(component_id='rows-data-dropdown', component_property='value')
-)
-def filter_data_show(city, month, day, rows):
+    [Input('button', 'n_clicks')],
+    state = [
+        State(component_id='city-dropdown', component_property='value'),
+        State(component_id='month-dropdown', component_property='value'),
+        State(component_id='day-dropdown', component_property='value'),
+        State(component_id='rows-data-dropdown', component_property='value')
+    ],
+   )
+def filter_data_show(clicks, city, month, day, rows):
     CITY_DATA = { 'Chicago': 'chicago.csv',
               'New York City': 'new_york_city.csv',
               'Washington': 'washington.csv' }
@@ -270,6 +279,9 @@ def trip_duration(df):
     Input('filtered-df-use','data')
 )
 def user_stat(df):
+
+    print(f'Our dataframe is {df}')
+
     ### --------- User Type ---------- ###
     user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
 
@@ -321,6 +333,9 @@ def user_stat(df):
     recent_birth_year = int(year_list_cleaned[-1])
 
     return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
+
+def plot_charts(df):
+    pass
 
 if __name__ == '__main__':
     app.run_server(debug = True)
