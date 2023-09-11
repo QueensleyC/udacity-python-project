@@ -359,7 +359,7 @@ def user_stat(df):
 @app.callback(
     Output("dsn-birth-year", "figure"),
     Output("gender-count-plot", "figure"),
-    # Output("user-type-count-plot", "figure"),
+    Output("user-type-count-plot", "figure"),
     # Output("top-10-start-station", "figure"),
     # Output("top-10-end-station", "figure"),
     Input('filtered-df-use','data')
@@ -383,8 +383,19 @@ def plot_charts(df):
     gender_count_plot = px.bar(y = gender_count_series.values, x = gender_count_series.index,title='Gender Count Plot')
     gender_count_plot.update_layout(xaxis_title = "Gender", yaxis_title = "Count")
 
+    # plot user type count
+    user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
 
-    return birth_year_dsn, gender_count_plot
+    user_type_count = Counter(user_type_list_cleaned)
+    user_type_series = pd.Series(user_type_count)
+
+    user_type_count_plot =  px.bar(y = user_type_series.values, x = user_type_series.index,title='User Type Count Plot')
+    user_type_count_plot.update_layout(xaxis_title = "User Type", yaxis_title = "Count")
+
+
+
+
+    return birth_year_dsn, gender_count_plot, user_type_count_plot
 
 if __name__ == '__main__':
     app.run_server(debug = True)
