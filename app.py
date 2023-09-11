@@ -7,6 +7,7 @@ import time
 import datetime
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import sys
 
 from collections import Counter
@@ -114,7 +115,18 @@ app.layout = html.Div(
         html.H5('Earliest Year of Birth:'),
         html.Div(id = 'earliest-year-birth'),
         html.H5('Most Recent Year of Birth:'),
-        html.Div(id = 'recent-year-birth')
+        html.Div(id = 'recent-year-birth'),
+
+
+        dcc.Graph(id = 'dsn-birth-year'),
+        dcc.Graph(id = 'gender-count-plot'),
+        dcc.Graph(id = 'user-type-count-plot'),
+        dcc.Graph(id = 'top-10-start-station'),
+        dcc.Graph(id = 'top-10-end-station'),
+
+
+
+
 
 ])
 
@@ -344,9 +356,25 @@ def user_stat(df):
     recent_birth_year = int(year_list_cleaned[-1])
 
     return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
-
+@app.callback(
+    Output("dsn-birth-year", "figure"),
+    # Output("gender-count-plot", "figure"),
+    # Output("user-type-count-plot", "figure"),
+    # Output("top-10-start-station", "figure"),
+    # Output("top-10-end-station", "figure"),
+    Input('filtered-df-use','data')
+)
 def plot_charts(df):
-    pass
+
+    # plot year distribution
+    year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
+    birth_year = Counter(year_list_cleaned)
+    birth_year_series = pd.Series(birth_year)
+    
+    birth_year_dsn = px.bar(y = birth_year_series.values, x = birth_year_series.index,title='Distribution of Birth Year')
+    birth_year_dsn.update_layout(xaxis_title = "Year", yaxis_title = "Count")
+
+    return birth_year_dsn
 
 if __name__ == '__main__':
     app.run_server(debug = True)
