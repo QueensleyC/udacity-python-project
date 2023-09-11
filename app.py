@@ -123,6 +123,7 @@ app.layout = html.Div(
         dcc.Graph(id = 'user-type-count-plot'),
         dcc.Graph(id = 'top-10-start-station'),
         dcc.Graph(id = 'top-10-end-station'),
+        dcc.Graph(id = 'top-10-routes'),
 
 ])
 
@@ -358,6 +359,7 @@ def user_stat(df):
     Output("user-type-count-plot", "figure"),
     Output("top-10-start-station", "figure"),
     Output("top-10-end-station", "figure"),
+    Output("top-10-routes", "figure"),
     Input('filtered-df-use','data')
 )
 def plot_charts(df):
@@ -404,8 +406,18 @@ def plot_charts(df):
     es_plot =  px.bar(y = es_series.values[:10], x = es_series.index[:10],title='Top 10 Most Used End Stations')
     es_plot.update_layout(xaxis_title = "Stations", yaxis_title = "Count")
 
+    # top 10 Routes
+    station_zip = list(zip(df['Start Station'], df['End Station']))
+    station_hyphened = [str(start) + ' - ' + str(end) for start, end in station_zip]
+    routes = Counter(station_hyphened)
+    routes_series = pd.Series(routes)
+    routes_series.sort_values(ascending= False, inplace= True)
 
-    return birth_year_dsn, gender_count_plot, user_type_count_plot, ss_plot,es_plot
+    routes_plot = px.bar(y = routes_series.values[:10], x = routes_series.index[:10],title='Top 10 Most Used End Stations')
+    routes_plot.update_layout(xaxis_title = "Routes", yaxis_title = "Count")
+
+
+    return birth_year_dsn, gender_count_plot, user_type_count_plot, ss_plot, es_plot, routes_plot
 
 if __name__ == '__main__':
     app.run_server(debug = True)
