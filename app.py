@@ -36,7 +36,7 @@ app.layout = html.Div(
         dcc.Dropdown(options = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], value = 'All', id='day-dropdown',clearable=False),
 
         html.H5('How many rows of the data would you like to view?'),
-        dcc.Dropdown(options = [0,5,10,20,50,100,200,'All'], value = 0, id='rows-data-dropdown',clearable=False),
+        dcc.Dropdown(options = [0,5,10,20,50,100,200], value = 0, id='rows-data-dropdown',clearable=False),
 
         html.Br(), # Adds spacing between elements
 
@@ -249,15 +249,19 @@ def show_data(data):
 def times_of_travel(df):
     
     month = Counter(df['month'])
-    top_month = [i for i in month][0]
+    month_series = pd.Series(month)
+    month_series.sort_values(ascending= False, inplace= True)
+    top_month = month_series.index[0]
 
     dow = Counter(df['dow'])
-    top_dow = [i for i in dow][0]
+    dow_series = pd.Series(dow)
+    dow_series.sort_values(ascending= False, inplace= True)
+    top_dow = dow_series.index[0]
 
     hour = Counter(df['hour'])
-    top_hour = [i for i in hour][0]
-
-    print(month)
+    hour_series = pd.Series(hour)
+    hour_series.sort_values(ascending= False, inplace= True)
+    top_hour = hour_series.index[0]
 
     return top_month, top_dow, top_hour
 
@@ -269,14 +273,25 @@ def times_of_travel(df):
 )
 def station_stats(df):
     ss = Counter(df['Start Station'])
-    top_ss = [i for i in ss][0]
+    ss_series = pd.Series(ss)
+    ss_series.sort_values(ascending= False, inplace= True)
+    
+    top_ss = ss_series.index[0]
 
     es = Counter(df['End Station'])
-    top_es = [i for i in es][0]
+    es_series = pd.Series(es)
+    es_series.sort_values(ascending= False, inplace= True)
+    
+    top_es = es_series.index[0]
 
-    ss_es = Counter(list(zip(df['Start Station'], df['End Station'])))
-    freq_route = [str(start) + ' - ' + str(end) for start, end in ss_es][0]
 
+    station_zip = list(zip(df['Start Station'], df['End Station']))
+    station_hyphened = [str(start) + ' - ' + str(end) for start, end in station_zip]
+    routes = Counter(station_hyphened)
+    routes_series = pd.Series(routes)
+    routes_series.sort_values(ascending= False, inplace= True)
+
+    freq_route = routes_series.index[0]
     return top_ss, top_es, freq_route
 
 
@@ -413,7 +428,7 @@ def plot_charts(df):
     routes_series = pd.Series(routes)
     routes_series.sort_values(ascending= False, inplace= True)
 
-    routes_plot = px.bar(y = routes_series.values[:10], x = routes_series.index[:10],title='Top 10 Most Used End Stations')
+    routes_plot = px.bar(y = routes_series.values[:10], x = routes_series.index[:10],title='Top 10 Most Plied Routes')
     routes_plot.update_layout(xaxis_title = "Routes", yaxis_title = "Count")
 
 
