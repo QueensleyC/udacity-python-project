@@ -35,8 +35,8 @@ app.layout = html.Div([
 
         html.Br(), # Adds spacing between elements
 
-        # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
-        html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#00ff00', 'color':'black','width': '300px'}),
+        # # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
+        # html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#00ff00', 'color':'black','width': '300px'}),
 
         html.Br(),
 
@@ -75,9 +75,34 @@ app.layout = html.Div([
 
         html.H3('User Statistics' ,style = {'textAlign':'center'}),
         html.H5('User Type Count:'),
-        html.Div(id = 'user-type-count'),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Subscriber:'), width = 1),
+                dbc.Col(html.Div(id = 'subscriber')),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Customer:'), width = 1),
+                dbc.Col(html.Div(id = 'customer')),
+            ]
+        ),
+        html.Div(id = 'user-type-count-1'),
+        html.Div(id = 'user-type-count-2'),
+
         html.H5('Gender Count:'),
-        html.Div(id = 'gender-count'),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Male:'), width = 1),
+                dbc.Col(html.Div(id = 'gender-count-m')),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(html.H6('Female:'), width = 1),
+                dbc.Col(html.Div(id = 'gender-count-f')),
+            ]
+        ),
 
         html.H5('Most Common Year of Birth:'),
         html.Div(id = 'common-year-birth'),
@@ -90,14 +115,14 @@ app.layout = html.Div([
 
 @app.callback(
     Output(component_id='filtered-df-use', component_property= 'data'),
-    [Input('button', 'n_clicks')],
-    state = [
-        State(component_id='city-dropdown', component_property='value'),
-        State(component_id='month-dropdown', component_property='value'),
-        State(component_id='day-dropdown', component_property='value')
-    ],
+    # [Input('button', 'n_clicks')],
+    # state = [
+        Input(component_id='city-dropdown', component_property='value'),
+        Input(component_id='month-dropdown', component_property='value'),
+        Input(component_id='day-dropdown', component_property='value')
+    # ],
    )
-def filter_data_use(clicks, city, month, day):
+def filter_data_use(city, month, day):
 
     print('Creating dataset at {}'.format(time.time()))
 
@@ -140,15 +165,16 @@ def filter_data_use(clicks, city, month, day):
 
 @app.callback(
     Output(component_id='filtered-df-show', component_property= 'data'),
-    [Input('button', 'n_clicks')],
-    state = [
-        State(component_id='city-dropdown', component_property='value'),
-        State(component_id='month-dropdown', component_property='value'),
-        State(component_id='day-dropdown', component_property='value'),
-        State(component_id='rows-data-dropdown', component_property='value')
-    ],
+    # [Input('button', 'n_clicks')],
+    # state = [
+        Input(component_id='city-dropdown', component_property='value'),
+        Input(component_id='month-dropdown', component_property='value'),
+        Input(component_id='day-dropdown', component_property='value'),
+        Input(component_id='rows-data-dropdown', component_property='value')
+    # ],
    )
-def filter_data_show(clicks, city, month, day, rows):
+   # add 'clicks' as the first parameter
+def filter_data_show(city, month, day, rows):
     CITY_DATA = { 'Chicago': 'chicago.csv',
               'New York City': 'new_york_city.csv',
               'Washington': 'washington.csv' }
@@ -244,6 +270,10 @@ def trip_duration(df):
     return total_duration, mean_duration
 
 @app.callback(
+    Output('subscriber', 'children'),
+    Output('customer', 'children'),
+    Output('gender-count-m', 'children'),
+    Output('gender-count-f', 'children'),
     Output('recent-year-birth', 'children'),
     Output('earliest-year-birth','children'),
     Output('common-year-birth','children'),
@@ -251,7 +281,7 @@ def trip_duration(df):
 )
 def user_stat(df):
 
-    print(f'Our dataframe is {df}')
+    # print(f'Our dataframe is {df}')
 
     ### --------- User Type ---------- ###
     user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
@@ -302,7 +332,7 @@ def user_stat(df):
     earliest_birth_year = int(year_list_cleaned[0])
     recent_birth_year = int(year_list_cleaned[-1])
 
-    return recent_birth_year, earliest_birth_year, top_birth_year
+    return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
 
 def plot_charts(df):
     pass
