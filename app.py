@@ -1,8 +1,10 @@
 from dash import Dash, dcc, html, Output, Input, dash_table
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 
 import time
+import datetime
 import pandas as pd
 import numpy as np
 import sys
@@ -38,7 +40,7 @@ app.layout = html.Div(
         html.Br(), # Adds spacing between elements
 
         # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
-        html.Button('Run Analysis', id='analyse', style = {'margin-left': '37.5%', 'backgroundColor': '#d70808', 'color':'black','width': '300px'}),
+        html.Button('Run Analysis', id='analyse_button', style = {'margin-left': '37.5%', 'backgroundColor': '#d70808', 'color':'black','width': '300px'}),
 
         html.Br(),
 
@@ -118,101 +120,109 @@ app.layout = html.Div(
 
 @app.callback(
     Output(component_id='filtered-df-use', component_property= 'data'),
-    # [Input('button', 'n_clicks')],
-    # state = [
-        Input(component_id='city-dropdown', component_property='value'),
-        Input(component_id='month-dropdown', component_property='value'),
-        Input(component_id='day-dropdown', component_property='value')
-    # ],
+    inputs = [Input('analyse_button', 'n_clicks')],
+    state = [
+        State(component_id='city-dropdown', component_property='value'),
+        State(component_id='month-dropdown', component_property='value'),
+        State(component_id='day-dropdown', component_property='value')
+    ],
    )
-def filter_data_use(city, month, day):
+def filter_data_use(clicks, city, month, day):
 
-    print('Creating dataset at {}'.format(time.time()))
+    if clicks is None:
+        raise PreventUpdate
+    else:
 
-    CITY_DATA = { 'Chicago': 'chicago.csv',
-              'New York City': 'new_york_city.csv',
-              'Washington': 'washington.csv' }
+        print('Creating dataset at {}'.format(datetime.datetime.now()))
 
-    df = pd.read_csv(f'{CITY_DATA[city]}', parse_dates=['Start Time', 'End Time'])
+        CITY_DATA = { 'Chicago': 'chicago.csv',
+                'New York City': 'new_york_city.csv',
+                'Washington': 'washington.csv' }
 
-    # Drop first column
-    df = df.iloc[:,1:]
+        df = pd.read_csv(f'{CITY_DATA[city]}', parse_dates=['Start Time', 'End Time'])
 
-    # Create month column
-    months_dict = {'01': 'January', '02': 'February', '03': 'March', '04':'April', '05': 'May', '06': 'June'}
+        # Drop first column
+        df = df.iloc[:,1:]
 
-    df['month'] = df['Start Time'].dt.strftime('%m')
-    df['month'] = df['month'].map(months_dict)
+        # Create month column
+        months_dict = {'01': 'January', '02': 'February', '03': 'March', '04':'April', '05': 'May', '06': 'June'}
 
-    # Create day of week (dow) column
-    dow_dict ={0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+        df['month'] = df['Start Time'].dt.strftime('%m')
+        df['month'] = df['month'].map(months_dict)
 
-    df['dow'] = df['Start Time'].dt.dayofweek
-    df['dow'] = df['dow'].map(dow_dict)
+        # Create day of week (dow) column
+        dow_dict ={0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
-    # Create an hour column
-    df['hour'] = df['Start Time'].dt.hour
-    df['hour'] = df['hour'].apply(lambda x: str(x) + ':00')  
+        df['dow'] = df['Start Time'].dt.dayofweek
+        df['dow'] = df['dow'].map(dow_dict)
+
+        # Create an hour column
+        df['hour'] = df['Start Time'].dt.hour
+        df['hour'] = df['hour'].apply(lambda x: str(x) + ':00')  
 
 
-    # Filter data
-    if month != 'All':
-        df = df[df['month'] == month]
+        # Filter data
+        if month != 'All':
+            df = df[df['month'] == month]
 
-    if day != 'All':
-        df = df[df['dow'] == day]
+        if day != 'All':
+            df = df[df['dow'] == day]
 
-    return df.to_dict('list')
+        return df.to_dict('list')
 
 
 
 @app.callback(
     Output(component_id='filtered-df-show', component_property= 'data'),
-    # [Input('button', 'n_clicks')],
-    # state = [
-        Input(component_id='city-dropdown', component_property='value'),
-        Input(component_id='month-dropdown', component_property='value'),
-        Input(component_id='day-dropdown', component_property='value'),
-        Input(component_id='rows-data-dropdown', component_property='value')
-    # ],
+    inputs = [Input('analyse_button', 'n_clicks')],
+    state = [
+        State(component_id='city-dropdown', component_property='value'),
+        State(component_id='month-dropdown', component_property='value'),
+        State(component_id='day-dropdown', component_property='value'),
+        State(component_id='rows-data-dropdown', component_property='value')
+    ],
    )
    # add 'clicks' as the first parameter
-def filter_data_show(city, month, day, rows):
-    CITY_DATA = { 'Chicago': 'chicago.csv',
-              'New York City': 'new_york_city.csv',
-              'Washington': 'washington.csv' }
+def filter_data_show(clicks, city, month, day, rows):
 
-    df = pd.read_csv(f'{CITY_DATA[city]}', parse_dates=['Start Time', 'End Time'])
+    if clicks is None:
+        raise PreventUpdate
+    else:
+        CITY_DATA = { 'Chicago': 'chicago.csv',
+                'New York City': 'new_york_city.csv',
+                'Washington': 'washington.csv' }
 
-    # Drop first column
-    df = df.iloc[:,1:]
+        df = pd.read_csv(f'{CITY_DATA[city]}', parse_dates=['Start Time', 'End Time'])
 
-    # Create month column
-    months_dict = {'01': 'January', '02': 'February', '03': 'March', '04':'April', '05': 'May', '06': 'June'}
+        # Drop first column
+        df = df.iloc[:,1:]
 
-    df['month'] = df['Start Time'].dt.strftime('%m')
-    df['month'] = df['month'].map(months_dict)
+        # Create month column
+        months_dict = {'01': 'January', '02': 'February', '03': 'March', '04':'April', '05': 'May', '06': 'June'}
 
-    # Create day of week (dow) column
-    dow_dict ={0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+        df['month'] = df['Start Time'].dt.strftime('%m')
+        df['month'] = df['month'].map(months_dict)
 
-    df['dow'] = df['Start Time'].dt.dayofweek
-    df['dow'] = df['dow'].map(dow_dict)
+        # Create day of week (dow) column
+        dow_dict ={0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
-    # Create an hour column
-    df['hour'] = df['Start Time'].dt.hour
-    df['hour'] = df['hour'].apply(lambda x: str(x) + ':00')  
+        df['dow'] = df['Start Time'].dt.dayofweek
+        df['dow'] = df['dow'].map(dow_dict)
+
+        # Create an hour column
+        df['hour'] = df['Start Time'].dt.hour
+        df['hour'] = df['hour'].apply(lambda x: str(x) + ':00')  
 
 
-    # Filter data
-    if month != 'All':
-        df = df[df['month'] == month]
+        # Filter data
+        if month != 'All':
+            df = df[df['month'] == month]
 
-    if day != 'All':
-        df = df[df['dow'] == day]
+        if day != 'All':
+            df = df[df['dow'] == day]
 
-    df = df.head(rows)
-    return df.to_dict('records')
+        df = df.head(rows)
+        return df.to_dict('records')
 
 @app.callback(
     Output('show-df', 'data'),
