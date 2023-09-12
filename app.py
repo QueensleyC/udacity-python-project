@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html, Output, Input, dash_table
+from dash import Dash, dcc, html, Output, Input, dash_table, clientside_callback
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -42,7 +42,6 @@ app.layout = html.Div(
 
         html.Br(), # Adds spacing between elements
 
-        # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
         dmc.Button('Run Analysis', 
                     id='analyse_button', 
                     leftIcon = [DashIconify(icon = 'mdi:chart-line')],
@@ -132,6 +131,27 @@ app.layout = html.Div(
         dcc.Graph(id = 'top-10-routes'),
 
 ])
+
+# @app.callback(
+#     Output('analyse_button', 'loading', allow_duplicate=True),
+#     Input('analyse_button', 'n_clicks'),
+#     prevent_initial_call=True
+# )
+# def update(_):
+#     return dcc.Loading()
+
+
+clientside_callback(
+    """
+    function updateLoadingState(n_clicks) {
+        return true
+    }
+    """,
+    Output("analyse_button", "loading", allow_duplicate=True),
+    Input("analyse_button", "n_clicks"),
+    prevent_initial_call=True,
+)
+
 
 @app.callback(
     Output(component_id='filtered-df-use', component_property= 'data'),
@@ -424,6 +444,16 @@ def plot_charts(df):
 
 
     return birth_year_dsn, gender_count_plot, user_type_count_plot, ss_plot, es_plot, routes_plot
+
+@app.callback(
+    Output('analyse_button', 'loading'),
+    Input('analyse_button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def update(_):
+    time.sleep(1)
+    return False
+
 
 if __name__ == '__main__':
     app.run_server(debug = True)
