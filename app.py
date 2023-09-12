@@ -352,41 +352,54 @@ def user_stat(df):
 
 
     ### --------- Gender ---------- ###
-
-    # Remove all NoneType from the list
-    gender_list_cleaned = [item for item in df['Gender'] if item is not None]
-
-    gender_count_dict = Counter(gender_list_cleaned)
-
-    print(gender_count_dict)
-
     genders = ['','']
 
-    genders[0] = gender_count_dict['Male'] 
-    genders[1] = gender_count_dict['Female'] 
+    if 'Gender' in df:
+        # Remove all NoneType from the list
+        gender_list_cleaned = [item for item in df['Gender'] if item is not None]
+
+        gender_count_dict = Counter(gender_list_cleaned)
+
+        print(gender_count_dict)        
+
+        genders[0] = gender_count_dict['Male'] 
+        genders[1] = gender_count_dict['Female'] 
+
+    else: 
+        genders[0] = 'This city has no data for genders'
+        genders[1] = 'This city has no data for genders'
 
 
     ### --------- Births ---------- ###
-    print('Removing NoneType...')
-    year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
+    if 'Birth Year' in df:
+        print('Removing NoneType...')
+        year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
 
 
-    birth_year = Counter(year_list_cleaned)
+        birth_year = Counter(year_list_cleaned)
+        
+        list_birth_year_count = []
+
+        for item in birth_year.items():
+            list_birth_year_count.append(item)
+
+
+        top_birth_year = sorted(list_birth_year_count, key = lambda x: x[1], reverse=True)[0][0] #TODO: Not producing correct result
+                
+        year_list_cleaned.sort()
+
+        earliest_birth_year = int(year_list_cleaned[0])
+        recent_birth_year = int(year_list_cleaned[-1])
     
-    list_birth_year_count = []
+    else:
+        earliest_birth_year = 'This city has no data for year'
+        recent_birth_year = 'This city has no data for year'
+        top_birth_year = 'This city has no data for year'
 
-    for item in birth_year.items():
-        list_birth_year_count.append(item)
-
-
-    top_birth_year = sorted(list_birth_year_count, key = lambda x: x[1], reverse=True)[0][0] #TODO: Not producing correct result
-               
-    year_list_cleaned.sort()
-
-    earliest_birth_year = int(year_list_cleaned[0])
-    recent_birth_year = int(year_list_cleaned[-1])
 
     return users[0], users[1], genders[0], genders[1], recent_birth_year, earliest_birth_year, top_birth_year
+
+
 @app.callback(
     Output("dsn-birth-year", "figure"),
     Output("gender-count-plot", "figure"),
@@ -400,30 +413,79 @@ def plot_charts(df):
 
     transparent_background = 'rgba(0,0,0,0)'
 
-    # plot year distribution
-    year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
-    birth_year = Counter(year_list_cleaned)
-    birth_year_series = pd.Series(birth_year)
-    
-    birth_year_dsn = px.bar(y = birth_year_series.values, x = birth_year_series.index,title='Distribution of Birth Year')
-    birth_year_dsn.update_layout(xaxis_title = "Year", 
-                                    yaxis_title = "Count",
-                                    plot_bgcolor = transparent_background,
-                                    paper_bgcolor = transparent_background
-                                )
-
-    # plot gender count
-    gender_list_cleaned = [item for item in df['Gender'] if item is not None]
-
-    gender_count = Counter(gender_list_cleaned)
-    gender_count_series = pd.Series(gender_count)
-
-    gender_count_plot = px.bar(y = gender_count_series.values, x = gender_count_series.index,title='Gender Count Plot')
-    gender_count_plot.update_layout(xaxis_title = "Gender", 
+    if 'Birth Year' in df and 'Gender' in df:
+        # plot year distribution
+        year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
+        birth_year = Counter(year_list_cleaned)
+        birth_year_series = pd.Series(birth_year)
+        
+        birth_year_dsn = px.bar(y = birth_year_series.values, x = birth_year_series.index,title='Distribution of Birth Year')
+        birth_year_dsn.update_layout(xaxis_title = "Year", 
                                         yaxis_title = "Count",
                                         plot_bgcolor = transparent_background,
                                         paper_bgcolor = transparent_background
                                     )
+
+        # plot gender count
+        gender_list_cleaned = [item for item in df['Gender'] if item is not None]
+
+        gender_count = Counter(gender_list_cleaned)
+        gender_count_series = pd.Series(gender_count)
+
+        gender_count_plot = px.bar(y = gender_count_series.values, x = gender_count_series.index,title='Gender Count Plot')
+        gender_count_plot.update_layout(xaxis_title = "Gender", 
+                                            yaxis_title = "Count",
+                                            plot_bgcolor = transparent_background,
+                                            paper_bgcolor = transparent_background
+                                        )
+    
+    else: 
+        empty_graph_year = {
+                "layout": {
+                    "xaxis": {
+                        "visible": False
+                    },
+                    "yaxis": {
+                        "visible": False
+                    },
+                    "annotations": [
+                        {
+                            "text": "No data for year found",
+                            "xref": "paper",
+                            "yref": "paper",
+                            "showarrow": False,
+                            "font": {
+                                "size": 28
+                            }
+                        }
+                    ]
+                }
+            }
+
+        empty_graph_gender = {
+                "layout": {
+                    "xaxis": {
+                        "visible": False
+                    },
+                    "yaxis": {
+                        "visible": False
+                    },
+                    "annotations": [
+                        {
+                            "text": "No data for gender found",
+                            "xref": "paper",
+                            "yref": "paper",
+                            "showarrow": False,
+                            "font": {
+                                "size": 28
+                            }
+                        }
+                    ]
+                }
+            }
+
+        birth_year_dsn = empty_graph_year
+        gender_count_plot = empty_graph_gender
 
     # plot user type count
     user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
