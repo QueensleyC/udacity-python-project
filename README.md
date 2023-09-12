@@ -59,7 +59,7 @@ The original files are much larger and messier, hence they are not used on the p
    - Top 10 most used end stations
 
 ## Good to Know
-[bikeshare_2](/bikeshare_2.py) creates an interactive experience in the terminal while [app.py](/app.py) displays a link in the terminal that creates a web app when clicked (`ctrl + click`) on 
+[bikeshare.py](/bikeshare.py) creates an interactive experience in the terminal while [app.py](/app.py) displays a link in the terminal that creates a web app when clicked (`ctrl + click`) on 
      
 ## Built With
 - Python
