@@ -1,7 +1,5 @@
 dash
-dash.dependencies
 dash_iconify
-dash.exceptions
 dash_bootstrap_components
 dash_mantine_components
 time
