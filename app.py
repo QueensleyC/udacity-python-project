@@ -1,9 +1,10 @@
 from dash import Dash, dcc, html, Output, Input, dash_table, clientside_callback
 from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from dash.exceptions import PreventUpdate
+
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 import time
 import datetime
@@ -14,29 +15,28 @@ import sys
 
 from collections import Counter
 
+# Instantiate app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-colors = {
-    'background': '#111111',
-    'text':'7fdbff'
-}
-
+# Set background colour of Graphs in UI
 graph_ui_background = {'layout' :
         {
             'plot_bgcolor':'rgba(0,0,0,0)',
             'paper_bgcolor': 'rgba(0,0,0,0)',
             'font':{
-                'color':colors['text']
+                'color':'7fdbff'
             }
         }
         }
 
+# Create app layout
 app.layout = html.Div(
         style={'backgroundColor': '#0147ab'},
         children = [
         # Application title
         html.H1("Descriptive Statistics on US Bikeshare Data", style = {'textAlign':'center'}),
-        # Bar chart element
+        
+        # Dropdown elements for filtering data
         html.H2("Filter Data", style = {'color':'#0252bd'}),
 
         html.H5('Select City'),
@@ -55,6 +55,7 @@ app.layout = html.Div(
 
         html.Br(), # Adds spacing between elements
 
+        # Button for running analysis
         dmc.Button('Run Analysis', 
                     id='analyse_button', 
                     leftIcon = [DashIconify(icon = 'mdi:chart-line')],
@@ -63,18 +64,20 @@ app.layout = html.Div(
 
         html.Br(),
 
+        # Stores the filtered dataframe for use
         dcc.Store(id = 'filtered-df-show'),
         dcc.Store(id = 'filtered-df-use'),
 
         html.Br(),
 
+        # Element for displaying dataframe to the user
         dash_table.DataTable(
             id = 'show-df'
         ),
 
         html.Br(),
 
-
+        # Shows values of statistical analysis
         html.H3('Most Frequent Times of Travel' ,style = {'textAlign':'center'}),
         html.H5('Most Common Month:'),
         html.Div(id = 'most-common-month'),
@@ -135,7 +138,7 @@ app.layout = html.Div(
         html.H5('Most Recent Year of Birth:'),
         html.Div(id = 'recent-year-birth'),
 
-
+        # Displays graphs
         dcc.Graph(id = 'dsn-birth-year', figure = graph_ui_background),
         dcc.Graph(id = 'gender-count-plot', figure = graph_ui_background),
         dcc.Graph(id = 'user-type-count-plot', figure = graph_ui_background),
@@ -145,7 +148,7 @@ app.layout = html.Div(
 
 ])
 
-
+# Turns on loading state for button
 clientside_callback(
     """
     function updateLoadingState(n_clicks) {
@@ -167,6 +170,7 @@ clientside_callback(
         State(component_id='day-dropdown', component_property='value')
     ],
    )
+# Filters data according to user input (This will be used for the analysis)
 def filter_data_use(clicks, city, month, day):
 
     if clicks is None:
@@ -222,7 +226,7 @@ def filter_data_use(clicks, city, month, day):
         State(component_id='rows-data-dropdown', component_property='value')
     ],
    )
-   # add 'clicks' as the first parameter
+# Filters data according to user input (This will be displayed to the user if requested for)
 def filter_data_show(clicks, city, month, day, rows):
 
     if clicks is None:
@@ -268,6 +272,7 @@ def filter_data_show(clicks, city, month, day, rows):
     Output('show-df', 'data'),
     Input('filtered-df-show', 'data')
 )
+# Displays data if requested for
 def show_data(data):
     return data
 
@@ -277,6 +282,7 @@ def show_data(data):
     Output('most-common-sh', 'children'),
     Input('filtered-df-use','data')
 )
+# Analyses travel times
 def times_of_travel(df):
     
     month = Counter(df['month'])
@@ -302,6 +308,7 @@ def times_of_travel(df):
     Output('most-freq-route', 'children'),
     Input('filtered-df-use','data')
 )
+# Analysis station statistic
 def station_stats(df):
     ss = Counter(df['Start Station'])
     ss_series = pd.Series(ss)
@@ -331,6 +338,7 @@ def station_stats(df):
     Output('mean-travel-time', 'children'),
     Input('filtered-df-use','data')
 )
+# Analysis duration of trip
 def trip_duration(df):
     total_duration = np.sum(df["Trip Duration"])
     mean_duration = np.mean(df["Trip Duration"])
@@ -421,6 +429,7 @@ def user_stat(df):
     Output("top-10-routes", "figure"),
     Input('filtered-df-use','data')
 )
+# Plots chart 
 def plot_charts(df):
 
     transparent_background = 'rgba(0,0,0,0)'
@@ -553,6 +562,7 @@ def plot_charts(df):
 
     return birth_year_dsn, gender_count_plot, user_type_count_plot, ss_plot, es_plot, routes_plot
 
+# Turns off loading state for button
 @app.callback(
     Output('analyse_button', 'loading'),
     Input("top-10-routes", "figure"),
