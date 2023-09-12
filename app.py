@@ -63,6 +63,12 @@ app.layout = html.Div(
                     ),
 
         html.Br(),
+        html.Br(),
+
+
+        html.H5("NB: It takes >5 minutes to compute when Month and Day are set to 'All'",
+                 style = {'textAlign':'center', 'color':'red'},
+                 ),
 
         # Stores the filtered dataframe for use
         dcc.Store(id = 'filtered-df-show'),
