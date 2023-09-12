@@ -16,7 +16,20 @@ from collections import Counter
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-df_global = pd.DataFrame()
+colors = {
+    'background': '#111111',
+    'text':'7fdbff'
+}
+
+graph_ui_background = {'layout' :
+        {
+            'plot_bgcolor':'rgba(0,0,0,0)',
+            'paper_bgcolor': 'rgba(0,0,0,0)',
+            'font':{
+                'color':colors['text']
+            }
+        }
+        }
 
 app.layout = html.Div(
         style={'backgroundColor': '#0147ab'},
@@ -124,12 +137,12 @@ app.layout = html.Div(
         html.Div(id = 'recent-year-birth'),
 
 
-        dcc.Graph(id = 'dsn-birth-year'),
-        dcc.Graph(id = 'gender-count-plot'),
-        dcc.Graph(id = 'user-type-count-plot'),
-        dcc.Graph(id = 'top-10-start-station'),
-        dcc.Graph(id = 'top-10-end-station'),
-        dcc.Graph(id = 'top-10-routes'),
+        dcc.Graph(id = 'dsn-birth-year', figure = graph_ui_background),
+        dcc.Graph(id = 'gender-count-plot', figure = graph_ui_background),
+        dcc.Graph(id = 'user-type-count-plot', figure = graph_ui_background),
+        dcc.Graph(id = 'top-10-start-station', figure = graph_ui_background),
+        dcc.Graph(id = 'top-10-end-station', figure = graph_ui_background),
+        dcc.Graph(id = 'top-10-routes', figure = graph_ui_background)
 
 ])
 
@@ -385,13 +398,19 @@ def user_stat(df):
 )
 def plot_charts(df):
 
+    transparent_background = 'rgba(0,0,0,0)'
+
     # plot year distribution
     year_list_cleaned = [item for item in df['Birth Year'] if item is not None]
     birth_year = Counter(year_list_cleaned)
     birth_year_series = pd.Series(birth_year)
     
     birth_year_dsn = px.bar(y = birth_year_series.values, x = birth_year_series.index,title='Distribution of Birth Year')
-    birth_year_dsn.update_layout(xaxis_title = "Year", yaxis_title = "Count")
+    birth_year_dsn.update_layout(xaxis_title = "Year", 
+                                    yaxis_title = "Count",
+                                    plot_bgcolor = transparent_background,
+                                    paper_bgcolor = transparent_background
+                                )
 
     # plot gender count
     gender_list_cleaned = [item for item in df['Gender'] if item is not None]
@@ -400,7 +419,11 @@ def plot_charts(df):
     gender_count_series = pd.Series(gender_count)
 
     gender_count_plot = px.bar(y = gender_count_series.values, x = gender_count_series.index,title='Gender Count Plot')
-    gender_count_plot.update_layout(xaxis_title = "Gender", yaxis_title = "Count")
+    gender_count_plot.update_layout(xaxis_title = "Gender", 
+                                        yaxis_title = "Count",
+                                        plot_bgcolor = transparent_background,
+                                        paper_bgcolor = transparent_background
+                                    )
 
     # plot user type count
     user_type_list_cleaned = [item for item in df['User Type'] if item is not None]
@@ -409,7 +432,11 @@ def plot_charts(df):
     user_type_series = pd.Series(user_type_count)
 
     user_type_count_plot =  px.bar(y = user_type_series.values, x = user_type_series.index,title='User Type Count Plot')
-    user_type_count_plot.update_layout(xaxis_title = "User Type", yaxis_title = "Count")
+    user_type_count_plot.update_layout(xaxis_title = "User Type", 
+                                        yaxis_title = "Count",
+                                        plot_bgcolor = transparent_background,
+                                        paper_bgcolor = transparent_background
+                                    )
 
     # plot station statistic
     ss = Counter(df['Start Station'])
@@ -417,7 +444,11 @@ def plot_charts(df):
     ss_series.sort_values(ascending= False, inplace= True)
 
     ss_plot =  px.bar(y = ss_series.values[:10], x = ss_series.index[:10],title='Top 10 Most Used Start Stations')
-    ss_plot.update_layout(xaxis_title = "Stations", yaxis_title = "Count")
+    ss_plot.update_layout(xaxis_title = "Stations", 
+                            yaxis_title = "Count",
+                            plot_bgcolor = transparent_background,
+                            paper_bgcolor = transparent_background
+                           )
 
 
     es = Counter(df['End Station'])
@@ -425,7 +456,11 @@ def plot_charts(df):
     es_series.sort_values(ascending= False, inplace= True)
 
     es_plot =  px.bar(y = es_series.values[:10], x = es_series.index[:10],title='Top 10 Most Used End Stations')
-    es_plot.update_layout(xaxis_title = "Stations", yaxis_title = "Count")
+    es_plot.update_layout(xaxis_title = "Stations",
+                            yaxis_title = "Count",
+                            plot_bgcolor = transparent_background,
+                            paper_bgcolor = transparent_background
+                           )
 
     # top 10 Routes
     station_zip = list(zip(df['Start Station'], df['End Station']))
@@ -435,7 +470,11 @@ def plot_charts(df):
     routes_series.sort_values(ascending= False, inplace= True)
 
     routes_plot = px.bar(y = routes_series.values[:10], x = routes_series.index[:10],title='Top 10 Most Plied Routes')
-    routes_plot.update_layout(xaxis_title = "Routes", yaxis_title = "Count")
+    routes_plot.update_layout(xaxis_title = "Routes", 
+                                yaxis_title = "Count",
+                                plot_bgcolor = transparent_background,
+                                paper_bgcolor = transparent_background
+                               )
 
 
     return birth_year_dsn, gender_count_plot, user_type_count_plot, ss_plot, es_plot, routes_plot
