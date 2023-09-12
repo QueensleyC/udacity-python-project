@@ -5,5 +5,4 @@ dash_mantine_components
 pandas
 numpy
 plotly.express
-collections
 gunicorn
