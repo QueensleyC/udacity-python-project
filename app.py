@@ -41,14 +41,15 @@ app.layout = html.Div(
 
         html.H5('Select City'),
         dcc.Dropdown(options = ['Washington', 'New York City', 'Chicago'], value = 'Chicago', id='city-dropdown', clearable=False),
-        html.H5(''),
+        html.Br(), 
 
         html.H5('Select Month'),
         dcc.Dropdown(options = ['All', 'January', 'February', 'March', 'April', 'May', 'June'], value = 'All', id='month-dropdown',clearable=False),
-        html.H5(''),
+        html.Br(), 
 
         html.H5('Select Day'),
         dcc.Dropdown(options = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], value = 'All', id='day-dropdown',clearable=False),
+        html.Br(), 
 
         html.H5('How many rows of the data would you like to view?'),
         dcc.Dropdown(options = [0,5,10,20,50,100,200], value = 0, id='rows-data-dropdown',clearable=False),
@@ -66,7 +67,11 @@ app.layout = html.Div(
         html.Br(),
 
 
-        html.H5("NB: It takes >5 minutes to compute when Month and Day are set to 'All'",
+        html.H5("NB 1: It takes >5 minutes to compute when Month and/or Day are set to 'All'",
+                 style = {'textAlign':'center', 'color':'red'},
+                 ),
+        
+        html.H5("NB 2: To obtain maximum result, use a PC",
                  style = {'textAlign':'center', 'color':'red'},
                  ),
 
