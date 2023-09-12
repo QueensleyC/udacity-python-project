@@ -1,6 +1,8 @@
 from dash import Dash, dcc, html, Output, Input, dash_table
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 from dash.exceptions import PreventUpdate
 
 import time
@@ -17,12 +19,12 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 df_global = pd.DataFrame()
 
 app.layout = html.Div(
-        style={'backgroundColor': '#00cae4'},
+        style={'backgroundColor': '#0147ab'},
         children = [
         # Application title
-        html.H1("Descriptive Statistics on US Bikeshare Data", style = {'textAlign':'center', 'color':'#d70808'}),
+        html.H1("Descriptive Statistics on US Bikeshare Data", style = {'textAlign':'center'}),
         # Bar chart element
-        html.H2("Filter Data"),
+        html.H2("Filter Data", style = {'color':'#0252bd'}),
 
         html.H5('Select City'),
         dcc.Dropdown(options = ['Washington', 'New York City', 'Chicago'], value = 'Chicago', id='city-dropdown', clearable=False),
@@ -41,7 +43,11 @@ app.layout = html.Div(
         html.Br(), # Adds spacing between elements
 
         # html.Button('Run Analysis', id='analyse', style = {'text-align':'center','textAlign':'center', 'backgroundColor': '#00ff00', 'color':'black','width': '300px','margin': '0 auto'}),
-        html.Button('Run Analysis', id='analyse_button', style = {'margin-left': '37.5%', 'backgroundColor': '#d70808', 'color':'black','width': '300px'}),
+        dmc.Button('Run Analysis', 
+                    id='analyse_button', 
+                    leftIcon = [DashIconify(icon = 'mdi:chart-line')],
+                    style = {'margin-left': '37.5%', 'width': '300px'}
+                    ),
 
         html.Br(),
 
