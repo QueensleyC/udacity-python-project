@@ -2,8 +2,6 @@ dash
 dash_iconify
 dash_bootstrap_components
 dash_mantine_components
-time
-datetime
 pandas
 numpy
 plotly.express

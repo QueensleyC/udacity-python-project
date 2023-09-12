@@ -6,7 +6,6 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 
-import time
 import datetime
 import pandas as pd
 import numpy as np
@@ -570,7 +569,6 @@ def plot_charts(df):
     prevent_initial_call=True
 )
 def update(_):
-    time.sleep(1)
     return False
 
 
