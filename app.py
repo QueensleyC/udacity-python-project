@@ -145,14 +145,6 @@ app.layout = html.Div(
 
 ])
 
-# @app.callback(
-#     Output('analyse_button', 'loading', allow_duplicate=True),
-#     Input('analyse_button', 'n_clicks'),
-#     prevent_initial_call=True
-# )
-# def update(_):
-#     return dcc.Loading()
-
 
 clientside_callback(
     """
@@ -563,7 +555,7 @@ def plot_charts(df):
 
 @app.callback(
     Output('analyse_button', 'loading'),
-    Input('analyse_button', 'n_clicks'),
+    Input("top-10-routes", "figure"),
     prevent_initial_call=True
 )
 def update(_):
