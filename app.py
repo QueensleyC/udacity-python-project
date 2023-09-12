@@ -17,6 +17,8 @@ from collections import Counter
 # Instantiate app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+server = app.server
+
 # Set background colour of Graphs in UI
 graph_ui_background = {'layout' :
         {
