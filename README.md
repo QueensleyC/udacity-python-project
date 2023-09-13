@@ -57,9 +57,6 @@ The original files are much larger and messier, hence they are not used on the p
    - Count plot of user type
    - Top 10 most used start stations
    - Top 10 most used end stations
-
-## Good to Know
-[bikeshare.py](/bikeshare.py) creates an interactive experience in the terminal while [app.py](/app.py) displays a link in the terminal that creates a web app when clicked (`ctrl + click`) on 
      
 ## Built With
 - Python
@@ -79,3 +76,8 @@ The original files are much larger and messier, hence they are not used on the p
 - chicago.csv
 - new_york_city.csv
 - washington.csv
+
+## Good to Know
+[bikeshare.py](/bikeshare.py) creates an interactive experience in the terminal while [app.py](/app.py) displays a link in the terminal that creates a web app when clicked (`ctrl + click`) on 
+
+[requirements.txt](/requirements.txt) is the file needed for the hosting service [render](render.com). It contains the libraries used in the making of [app.py](/app.py)
