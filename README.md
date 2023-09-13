@@ -72,6 +72,9 @@ The original files are much larger and messier, hence they are not used on the p
 - dash_mantine_components
 - Visual Studio (IDE)
 
+## Hosting
+[Render's Web Service (free tier)](https://dashboard.render.com/create?type=web) is used to host the web version of this project
+
 ## Used Files 
 - chicago.csv
 - new_york_city.csv
