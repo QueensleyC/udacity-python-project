@@ -20,8 +20,7 @@ The Chicago and New York City files also have the following two columns:
 - Birth Year
 
 ![Data for the first 10 rides in the new_york_city.csv file
-Close](https://video.udacity-data.com/topher/2018/March/5aa771dc_nyc-data/nyc-data.png)[Data for the first 10 rides in the new_york_city.csv file
-Close]
+Close](https://video.udacity-data.com/topher/2018/March/5aa771dc_nyc-data/nyc-data.png)
 
 The original files are much larger and messier, hence they are not used on the project. they can be accessed here ([Chicago](https://www.divvybikes.com/system-data), [New York City](https://www.citibikenyc.com/system-data), [Washington](https://www.capitalbikeshare.com/system-data)). These files had more columns and they differed in format in many cases. Some data wrangling has been performed to condense these files to the above core six columns.
 
