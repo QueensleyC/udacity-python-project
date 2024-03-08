@@ -2,7 +2,7 @@
 # Explore Us Bikeshare Data.
 
 ## Project Details
-In this project, a csv dataset on bike sharing from 3 diffrent cities in the United States is explored and analyzed using python, that is done based on some user inputs to create an interactive experience.
+This project involves exploring and analyzing a CSV dataset on bike sharing from three different cities in the United States using Python. The analysis is conducted based on user inputs, creating an interactive experience for the audience.
 
 ## The Datasets
 The datasets provided by Motivate, a bike share system provider in the US, contains randomly selected data for the first six months of 2017 for all three cities (Chicago, New York City, Washington). All three of the data files contain the same core six (6) columns:
